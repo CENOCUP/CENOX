@@ -3,142 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FIFA LEAGUE - Acompanhamento Real-Time</title>
+    <title>FIFA PRO - Dashboard Detalhado</title>
     <style>
-        :root { --bg: #050505; --card: #111; --neon: #00ff87; --text: #fff; --dim: #777; --gold: #ffd700; }
+        :root { --bg: #050505; --card: #111; --neon: #00ff87; --text: #fff; --dim: #666; --gold: #ffd700; }
         body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
-        .container { width: 100%; max-width: 900px; }
+        .container { width: 100%; max-width: 1000px; }
         
-        /* Layout Mobile-First */
-        header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid var(--neon); padding-bottom: 10px; }
-        .nav-tabs { display: flex; justify-content: center; gap: 5px; margin-bottom: 20px; }
-        .tab-btn { background: #222; color: var(--dim); border: none; padding: 12px; border-radius: 8px; cursor: pointer; flex: 1; font-weight: bold; text-transform: uppercase; font-size: 0.75rem; }
-        .tab-btn.active { background: var(--neon); color: #000; }
+        header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid var(--neon); padding-bottom: 15px; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 15px; background: #1a1a1a; color: var(--dim); border: none; border-radius: 8px; cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 0.8rem; }
+        .tab-btn.active { background: var(--neon); color: #000; box-shadow: 0 0 15px rgba(0,255,135,0.3); }
 
-        .table-container { background: var(--card); border-radius: 12px; padding: 10px; overflow-x: auto; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th { text-align: left; color: var(--dim); padding: 10px; border-bottom: 1px solid #333; }
-        td { padding: 12px 10px; border-bottom: 1px solid #1a1a1a; }
+        .table-container { background: var(--card); border-radius: 12px; padding: 15px; overflow-x: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+        table { width: 100%; border-collapse: collapse; min-width: 850px; }
+        th { text-align: left; color: var(--dim); font-size: 0.65rem; text-transform: uppercase; padding: 12px; border-bottom: 1px solid #222; letter-spacing: 1px; }
+        td { padding: 14px 12px; border-bottom: 1px solid #1a1a1a; font-size: 0.9rem; }
         
-        .pos { font-weight: bold; width: 30px; text-align: center; }
-        .pts-oficiais { color: var(--neon); font-weight: 800; }
-        .desempenho-tag { color: var(--neon); font-size: 0.75rem; font-weight: bold; border: 1px solid var(--neon); padding: 2px 5px; border-radius: 4px; }
+        .pos { font-weight: bold; width: 35px; color: var(--dim); }
+        .nome { font-weight: 800; color: #eee; font-size: 1rem; }
+        .pts-oficiais { color: var(--neon); font-weight: 900; font-size: 1.1rem; }
+        .stats-num { color: #aaa; }
+        .sg-pos { color: #00ccff; }
+        .sg-neg { color: #ff4444; }
         
-        /* Menu Admin escondido para os outros */
-        .admin-section { display: none; margin-top: 20px; background: #1a1a1a; padding: 15px; border-radius: 10px; }
-        .btn-config { background: none; border: 1px solid #333; color: #333; font-size: 0.6rem; cursor: pointer; margin-top: 50px; }
+        .bonus-box { background: rgba(0,255,135,0.1); border: 1px solid var(--neon); color: var(--neon); padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.85rem; }
+
+        /* Estilos do Admin */
+        #adminArea { display: none; background: #1a1a1a; padding: 20px; border-radius: 12px; margin-top: 25px; border: 1px solid #333; }
+        .edit-row { display: grid; grid-template-columns: 2fr repeat(5, 1fr) 40px; gap: 8px; margin-bottom: 10px; }
+        input { background: #000; border: 1px solid #444; color: #fff; padding: 8px; border-radius: 5px; text-align: center; width: 100%; box-sizing: border-box; }
+        .btn-acao { width: 100%; padding: 12px; margin-top: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-salvar { background: var(--neon); color: #000; }
+        .btn-finish { background: #440000; color: #ff4444; margin-top: 30px; border: 1px solid #660000; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1 style="margin:0; font-size: 1.5rem;">FIFA <span style="color:var(--neon)">PRO LEAGUE</span></h1>
-        <p style="font-size: 0.7rem; color: var(--dim); margin: 0;">Acompanhe o ranking em tempo real</p>
+        <h1 style="margin:0; letter-spacing: 3px;">FIFA <span style="color:var(--neon)">PRO DASHBOARD</span></h1>
+        <p style="color:var(--dim); font-size: 0.75rem; margin-top: 5px;">DETALHAMENTO TÉCNICO E PERFORMANCE</p>
     </header>
 
-    <div class="nav-tabs">
-        <button id="tab-1" class="tab-btn active" onclick="switchTab('atual')">Temporada Atual</button>
-        <button id="tab-2" class="tab-btn" onclick="switchTab('geral')">Ranking Geral (All-Time)</button>
+    <div class="tabs">
+        <button id="tabAtu" class="tab-btn active" onclick="setView('atual')">Temporada Atual</button>
+        <button id="tabGer" class="tab-btn" onclick="setView('geral')">Ranking Histórico</button>
     </div>
 
     <div class="table-container">
-        <table id="tabela-fifa">
+        <table id="tabelaMaster">
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>JOGADOR</th>
-                    <th>PTS</th>
-                    <th>V/E/D</th>
-                    <th>GP/GC</th>
+                    <th>Jogador</th>
+                    <th>Pts</th>
+                    <th>J</th>
+                    <th>V</th>
+                    <th>E</th>
+                    <th>D</th>
+                    <th>GP</th>
+                    <th>GC</th>
                     <th>SG</th>
-                    <th>BÔNUS</th>
+                    <th>Desempenho (Bônus)</th>
                 </tr>
             </thead>
             <tbody></tbody>
         </table>
     </div>
 
-    <button class="btn-config" onclick="abrirAdmin()">Config</button>
-    
-    <div id="adminPanel" class="admin-section">
-        <h3>Admin: Editar Resultados</h3>
-        <div id="formLista"></div>
-        <button onclick="addNovo()" style="width:100%; margin: 10px 0;">+ Jogador</button>
-        <button onclick="salvar()" style="width:100%; background:var(--neon); color:#000; font-weight:bold; padding:10px;">SALVAR TUDO</button>
-        <button onclick="encerrarTemporada()" style="width:100%; margin-top:20px; background:red; color:white;">Encerrar Temporada (Soma no Geral)</button>
+    <button onclick="toggleAdmin()" style="background:none; border:none; color:#222; margin-top:40px; cursor:pointer; font-size: 0.7rem;">Acesso Restrito</button>
+
+    <div id="adminArea">
+        <h2 style="color:var(--neon); font-size: 1rem; margin-top: 0;">EDITAR DADOS DA TEMPORADA</h2>
+        <div id="listaEdit"></div>
+        <button class="btn-acao" onclick="novo()" style="background:none; border: 1px dashed var(--neon); color:var(--neon)">+ Adicionar Jogador</button>
+        <button class="btn-acao btn-salvar" onclick="save()">SALVAR ALTERAÇÕES</button>
+        <button class="btn-acao btn-finish" onclick="finish()">🔒 ENCERRAR TEMPORADA (SOMAR NO HISTÓRICO)</button>
     </div>
 </div>
 
 <script>
-    // Carrega dados do LocalStorage
-    let db = JSON.parse(localStorage.getItem('fifa_app_data')) || { atual: [], historico: [] };
+    let store = JSON.parse(localStorage.getItem('fifa_detalhado_db')) || { atual: [], historico: [] };
     let vista = 'atual';
 
-    function switchTab(t) {
-        vista = t;
-        document.getElementById('tab-1').classList.toggle('active', t === 'atual');
-        document.getElementById('tab-2').classList.toggle('active', t === 'geral');
+    function setView(v) {
+        vista = v;
+        document.getElementById('tabAtu').classList.toggle('active', v === 'atual');
+        document.getElementById('tabGer').classList.toggle('active', v === 'geral');
         render();
     }
 
     function render() {
-        const tbody = document.querySelector("#tabela-fifa tbody");
-        let dados = (vista === 'atual') ? processar(db.atual) : processarGeral();
-
-        tbody.innerHTML = dados.map((j, i) => `
-            <tr>
-                <td class="pos" style="color:${i==0?'gold':''}">${i+1}º</td>
-                <td style="font-weight:bold">${j.nome}</td>
-                <td class="pts-oficiais">${j.pts}</td>
-                <td>${j.v}/${j.e}/${j.d}</td>
-                <td style="color:#aaa">${j.gf}/${j.gs}</td>
-                <td>${j.gf - j.gs}</td>
-                <td><span class="desempenho-tag">${j.bonus}</span></td>
-            </tr>
-        `).join('');
-    }
-
-    function processar(lista) {
-        let r = lista.map(j => {
-            let pts = (j.v*3)+(j.e*1);
-            let bPos = 0; // Calculado após ordenação
-            return {...j, pts};
-        }).sort((a,b) => b.pts - a.pts || (a.gf-a.gs) - (b.gf-b.gs));
-
-        return r.map((j, i) => {
-            let bPos = (i==0?20:(i==1?15:(i==2?10:0)));
-            let bonus = (bPos + (j.gf*2.5) + (j.gs*-2)).toFixed(1);
-            return {...j, bonus};
+        const tbody = document.querySelector("#tabelaMaster tbody");
+        let lista = (vista === 'atual') ? [...store.atual] : processarGeral();
+        
+        // Regra FIFA: Pontos > Vitórias > Saldo > Gols Pró
+        lista.sort((a,b) => {
+            let pA = (a.v*3)+(a.e*1), pB = (b.v*3)+(b.e*1);
+            return pB - pA || b.v - a.v || (b.gp-b.gc) - (a.gp-a.gc) || b.gp - a.gp;
         });
+
+        tbody.innerHTML = lista.map((j, i) => {
+            let pts = (j.v*3)+(j.e*1);
+            let jgs = j.v + j.e + j.d;
+            let sg = j.gp - j.gc;
+            let bPos = (i==0?20:(i==1?15:(i==2?10:0)));
+            let bonus = (bPos + (j.gp*2.5) + (j.gc*-2.0)).toFixed(1);
+
+            return `<tr>
+                <td class="pos" style="color:${i==0?'var(--gold)':(i<3?'var(--neon)':'')}">${i+1}º</td>
+                <td class="nome">${j.nome}</td>
+                <td class="pts-oficiais">${pts}</td>
+                <td class="stats-num">${jgs}</td>
+                <td class="stats-num">${j.v}</td>
+                <td class="stats-num">${j.e}</td>
+                <td class="stats-num">${j.d}</td>
+                <td style="color:#00ff87">${j.gp}</td>
+                <td style="color:#ff4444">${j.gc}</td>
+                <td class="${sg >= 0 ? 'sg-pos' : 'sg-neg'}">${sg > 0 ? '+'+sg : sg}</td>
+                <td><span class="bonus-box">${bonus} pts</span></td>
+            </tr>`;
+        }).join('');
     }
 
     function processarGeral() {
         let soma = {};
-        [...db.historico, db.atual].forEach(t => {
-            t.forEach(j => {
-                if(!soma[j.nome]) soma[j.nome] = {nome:j.nome, v:0, e:0, d:0, gf:0, gs:0};
-                soma[j.nome].v += j.v; soma[j.nome].e += j.e; soma[j.nome].d += j.d;
-                soma[j.nome].gf += j.gf; soma[j.nome].gs += j.gs;
-            });
-        });
-        return processar(Object.values(soma));
+        [...store.historico, store.atual].forEach(t => t.forEach(j => {
+            if(!soma[j.nome]) soma[j.nome] = {nome:j.nome, v:0, e:0, d:0, gp:0, gc:0};
+            soma[j.nome].v += j.v; soma[j.nome].e += j.e; soma[j.nome].d += j.d;
+            soma[j.nome].gp += j.gp; soma[j.nome].gc += j.gc;
+        }));
+        return Object.values(soma);
     }
 
-    // Funções de Admin (Simplificadas)
-    function abrirAdmin() { document.getElementById('adminPanel').style.display = 'block'; renderAdmin(); }
+    // Funções Admin
+    function toggleAdmin() { document.getElementById('adminArea').style.display = 'block'; renderAdmin(); }
     function renderAdmin() {
-        document.getElementById('formLista').innerHTML = db.atual.map((j,i) => `
-            <div style="border-bottom:1px solid #333; padding:5px;">
-                ${j.nome} | V:<input type="number" value="${j.v}" onchange="db.atual[${i}].v=parseInt(this.value)"> 
-                GF:<input type="number" value="${j.gf}" onchange="db.atual[${i}].gf=parseInt(this.value)">
-                GS:<input type="number" value="${j.gs}" onchange="db.atual[${i}].gs=parseInt(this.value)">
+        document.getElementById('listaEdit').innerHTML = store.atual.map((j,i) => `
+            <div class="edit-row">
+                <input type="text" value="${j.nome}" onchange="store.atual[${i}].nome=this.value" style="text-align:left">
+                <input type="number" value="${j.v}" onchange="store.atual[${i}].v=parseInt(this.value)" placeholder="V">
+                <input type="number" value="${j.e}" onchange="store.atual[${i}].e=parseInt(this.value)" placeholder="E">
+                <input type="number" value="${j.d}" onchange="store.atual[${i}].d=parseInt(this.value)" placeholder="D">
+                <input type="number" value="${j.gp}" onchange="store.atual[${i}].gp=parseInt(this.value)" placeholder="GP">
+                <input type="number" value="${j.gc}" onchange="store.atual[${i}].gc=parseInt(this.value)" placeholder="GC">
+                <button onclick="remover(${i})" style="background:none; border:none; color:red; cursor:pointer">✖</button>
             </div>
         `).join('');
     }
-    function addNovo() { let n = prompt("Nome do Jogador:"); if(n) db.atual.push({nome:n, v:0, e:0, d:0, gf:0, gs:0}); renderAdmin(); }
-    function salvar() { localStorage.setItem('fifa_app_data', JSON.stringify(db)); render(); alert("Salvo!"); }
-    function encerrarTemporada() { if(confirm("Zerar e salvar no geral?")) { db.historico.push([...db.atual]); db.atual = db.atual.map(j=>({...j,v:0,e:0,d:0,gf:0,gs:0})); salvar(); } }
+    function novo() { store.atual.push({nome:"Novo", v:0, e:0, d:0, gp:0, gc:0}); renderAdmin(); }
+    function remover(i) { store.atual.splice(i, 1); renderAdmin(); }
+    function save() { localStorage.setItem('fifa_detalhado_db', JSON.stringify(store)); render(); alert("Ranking Atualizado!"); }
+    function finish() { if(confirm("Somar no Geral e resetar temporada atual?")) { store.historico.push([...store.atual]); store.atual = store.atual.map(j=>({...j,v:0,e:0,d:0,gp:0,gc:0})); save(); } }
 
     render();
 </script>
